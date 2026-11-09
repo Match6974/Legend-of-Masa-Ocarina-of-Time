@@ -168,16 +168,17 @@ const boss={m:BG,mat:bmat,hp:14,max:14,r:2.3,k:'b',s:'chase',t:2,kv:[0,0],flash:
 // state
 let learned=false,adult=false,tOpen=false,dkOn=false,bossT=boss,hasBow=false,arrows=0,wpn=0,drawing=false,charge=0,eT=0,eDown=false,rT=0,headT=0,cs=null,gateOpen=false,inG=false,jsl=false,cp=.35,armed=false,vy=0,wp=0,wsp=0,keysN=0,bossKey=false,hintCd=0,state='title',hp=6,MAX=6,inv=0,tt=0,swing=0,hitDone=true,oca=false,seq=[],cy=Math.PI,tgt=null,msgT=0,pkv=[0,0];const keys={};
 function msg(t,ms=3000){const e=$('msg');e.textContent=t;e.style.display='block';msgT=ms/1000}
-let AC,MG;const nf=m=>440*2**((m-69)/12),MAXV=.5;
+let AC,MG;const nf=m=>440*2**((m-69)/12),MAXV=.6;
 const mk=(bpm,lt,bt,ld,bd,bp,br,l,hm=0)=>({sd:30/bpm,lt,bt,ld,bd,bp,br,l,hm,i:0,nx:0,cur:0,tg:0,g:null});
 const TK={dun:mk(138,'square','sawtooth',.9,1.2,'10101010',[45,43,41,40],[69,0,72,0,76,0,72,0,74,0,77,0,81,0,77,0,76,0,79,0,83,0,79,0,77,76,74,72,71,0,69,0]),
  fld:mk(84,'triangle','sine',3.5,7,'10000000',[48,45,41,43],[67,0,0,0,72,0,0,0,71,0,69,0,67,0,0,0,64,0,0,0,69,0,0,0,67,0,65,0,64,0,0,0]),
  cst:mk(100,'triangle','sine',1.8,3.5,'10001000',[48,53,55,48],[72,0,76,0,79,0,84,0,83,0,81,0,79,0,76,0,77,0,81,0,84,0,88,0,86,0,84,0,83,0,79,0],-12),
  bat:mk(150,'square','sawtooth',.8,1,'11011010',[45,41,43,44],[69,69,0,72,69,0,76,0,75,75,0,72,69,0,68,0,69,69,0,72,69,0,77,0,76,75,74,0,72,0,71,0]),
  bos:mk(172,'sawtooth','sawtooth',.8,.9,'11111111',[40,39,38,37],[64,0,64,0,71,0,64,0,63,0,63,0,70,0,63,0,62,0,62,0,69,0,62,0,61,63,64,0,66,0,68,0])};
-function A(){if(!AC){AC=new AudioContext();MG=AC.createGain();MG.connect(AC.destination);for(const k in TK){TK[k].g=AC.createGain();TK[k].g.gain.value=0;TK[k].g.connect(MG)}}if(AC.state=='suspended')AC.resume();return AC}
+function A(){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}if(!AC){AC=new (window.AudioContext||window.webkitAudioContext)();MG=AC.createGain();MG.gain.value=.9;const cp=AC.createDynamicsCompressor();MG.connect(cp);cp.connect(AC.destination);for(const k in TK){TK[k].g=AC.createGain();TK[k].g.gain.value=0;TK[k].g.connect(MG)}}if(AC.state=='suspended')AC.resume();return AC}
+['click','touchend','keydown','pointerup'].forEach(t=>addEventListener(t,()=>{try{A()}catch(e){}},true));
 function tone(f,d=.3,ty='triangle',v=.15,dl=0,dest){try{A();const t=AC.currentTime+dl,o=AC.createOscillator(),g=AC.createGain();o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(dest||MG);o.start(t);o.stop(t+d)}catch(e){}}
-setInterval(()=>{if(!AC)return;const now=AC.currentTime;for(const k in TK){const o=TK[k];if(o.nx<now)o.nx=now+.05;while(o.nx<now+.25){if(o.cur>.01){const m=o.l[o.i%o.l.length],dl=o.nx-now;if(m){tone(nf(m),o.sd*o.ld,o.lt,.045,dl,o.g);if(o.hm)tone(nf(m+o.hm),o.sd*o.ld,o.lt,.03,dl,o.g)}if(o.bp[o.i%8]=='1')tone(nf(o.br[Math.floor(o.i/8)%o.br.length]),o.sd*o.bd,o.bt,.06,dl,o.g)}o.nx+=o.sd;o.i++}}},60);
+setInterval(()=>{if(!AC)return;const now=AC.currentTime;for(const k in TK){const o=TK[k];if(o.nx<now)o.nx=now+.05;while(o.nx<now+.25){if(o.cur>.01){const m=o.l[o.i%o.l.length],dl=o.nx-now;if(m){tone(nf(m),o.sd*o.ld,o.lt,.14,dl,o.g);if(o.hm)tone(nf(m+o.hm),o.sd*o.ld,o.lt,.08,dl,o.g)}if(o.bp[o.i%8]=='1')tone(nf(o.br[Math.floor(o.i/8)%o.br.length]),o.sd*o.bd,o.bt,.16,dl,o.g)}o.nx+=o.sd;o.i++}}},60);
 const F=[293.66,349.23,392,440,523.25];
 for(let i=1;i<=5;i++){const b=document.createElement('button');b.textContent=i;b.onclick=()=>note(i);$('notes').appendChild(b)}
 function note(n){tone(F[n-1],.6,'triangle',.2);seq=seq.concat(n).slice(-4);$('seq').textContent=seq.map(x=>'♪'+x).join(' ');const s=seq.join('');
