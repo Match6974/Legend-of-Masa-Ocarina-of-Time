@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="theme-color" content="#10201a">
 <title>ハイラル風アドベンチャー</title>
 <style>
 :root{--bg:#10201a;--fg:#f3ecd0;--ac:#ffd54a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10201a;--fg:#f3ecd0}}
 :root[data-theme="dark"]{--bg:#10201a;--fg:#f3ecd0}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:system-ui,"Hiragino Sans","Noto Sans JP",sans-serif;overflow:hidden}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font-family:system-ui,"Hiragino Sans","Noto Sans JP",sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
 canvas{display:block}
 #hearts{position:fixed;left:14px;top:calc(10px + env(safe-area-inset-top,0px));font-size:26px;color:#ff4a5a;text-shadow:0 2px 3px #0008}
 #hearts .e{color:#3a2a2e}
@@ -215,11 +216,11 @@ function tick(){const dt=Math.min(clock.getDelta(),.05);tt+=dt;requestAnimationF
   if(!bossOn&&P.position.z<-116){bossOn=true;foes.push(boss);$('boss').style.display='block';msg('魔物が目を覚ました！ 突進の前の溜めを見切れ！',4000)}
   hintCd-=dt;
   for(const d of doors){d.g.position.y+=((d.open?-8:0)-d.g.position.y)*Math.min(1,dt*3);if(d.open)continue;const dd=Math.hypot(P.position.x-d.x,P.position.z-d.z);
-   if(d.type=='song'){if(dd<7&&hintCd<=0){hintCd=4;msg('扉にオカリナの紋章…「開門の歌」を吹こう(Q)',3500)}}
+   if(d.type=='song'){if(dd<7&&hintCd<=0){hintCd=4;msg('扉にオカリナの紋章…「開門の歌」を吹こう(Q/♪)',3500)}}
    else if(dd<3){const have=d.type=='boss'?bossKey:keysN>0;if(have){if(d.type=='boss')bossKey=false;else keysN--;openDoor(d);msg(d.type=='boss'?'ボス部屋の鍵で錠前を開けた！':'小さい鍵で扉を開けた！')}else if(hintCd<=0){hintCd=3;msg(d.type=='boss'?'ボス部屋の錠前…ボス部屋の鍵が必要だ':'鍵が掛かっている。小さい鍵が必要だ')}}}
   if(!chests[4].active&&hf.every(e=>e.dead)){chests[4].active=chests[4].g.visible=true;msg('大宝箱が現れた！',3000);tone(784,.4)}
   if(!chests[1].active&&rf.every(e=>e.dead)){chests[1].active=chests[1].g.visible=true;msg('宝箱が現れた！',2500);tone(784,.4)}
-  for(const c of chests){if(c.open||!c.active||cs||oca)continue;if(Math.hypot(P.position.x-c.x,P.position.z-c.z)<2.2+c.sz){if(hintCd<=0){hintCd=3;msg(c.item=='msword'?'Cボタンでマスターソードを抜く':'Cボタンで宝箱を開ける',2500)}}if(0){c.open=true;c.lid.rotation.x=-1.2;c.lid.position.y=1.5;c.lid.position.z=-.5;tone(880,.5);if(c.kind=='boss'){bossKey=true;msg('ボス部屋の鍵を手に入れた！',3500)}else{keysN++;msg('小さい鍵を手に入れた！(所持 '+keysN+')',3000)}}}
+  for(const c of chests){if(c.open||!c.active||cs||oca)continue;if(Math.hypot(P.position.x-c.x,P.position.z-c.z)<2.2+c.sz){if(hintCd<=0){hintCd=3;msg(c.item=='msword'?'C(Act.)でマスターソードを抜く':'C(Act.)で宝箱を開ける',2500)}}if(0){c.open=true;c.lid.rotation.x=-1.2;c.lid.position.y=1.5;c.lid.position.z=-.5;tone(880,.5);if(c.kind=='boss'){bossKey=true;msg('ボス部屋の鍵を手に入れた！',3500)}else{keysN++;msg('小さい鍵を手に入れた！(所持 '+keysN+')',3000)}}}
   if(gateOpen)exitG.position.y+=(-9-exitG.position.y)*Math.min(1,dt*2);
   else if(Math.hypot(P.position.x,P.position.z+60)<5&&hintCd<=0){hintCd=4;msg('固く閉ざされた出口…魔物を倒せば開きそうだ',3000)}
   if(!inG&&P.position.z>66){inG=true;msg('ハイラル城の庭だ。兵士に見つからず姫のもとへ！',4500)}
@@ -268,7 +269,7 @@ function tick(){const dt=Math.min(clock.getDelta(),.05);tt+=dt;requestAnimationF
   if(keys.KeyR&&!cs)rT+=dt;else rT=0;$('isel').style.display=rT>.25?'block':'none';if(rT>.25)$('isel').textContent=hasBow?'アイテム選択 ▶ 🏹 弓矢 ×'+arrows:'アイテムなし';
   if(headT>0){headT-=dt;kAr.visible=!cs;kAr.rotation.y+=dt*4;kAr.position.set(0,3.4,0)}else kAr.visible=false;
   if(tdoor)tdoor.position.y+=((tOpen?-10:5)-tdoor.position.y)*Math.min(1,dt*2);
-  if(!tOpen&&Math.hypot(P.position.x-44,P.position.z+31)<9&&hintCd<=0){hintCd=4;msg(learned?'硬く閉ざされた扉…時の歌を奏でよう(Q)':'硬く閉ざされた扉…',3500)}
+  if(!tOpen&&Math.hypot(P.position.x-44,P.position.z+31)<9&&hintCd<=0){hintCd=4;msg(learned?'硬く閉ざされた扉…時の歌を奏でよう(Q/♪)':'硬く閉ざされた扉…',3500)}
   if(adult&&!dkOn&&P.position.z>66){dkOn=true;S.add(DG);DG.position.set(0,0,100);foes.push(dkB);bossT=dkB;$('boss').style.display='block';msg('魔王が現れた！',4000)}
   if(cs)csTick(dt);
   $('bb').style.width=Math.max(0,bossT.hp/bossT.max*100)+'%';
@@ -280,12 +281,12 @@ function tick(){const dt=Math.min(clock.getDelta(),.05);tt+=dt;requestAnimationF
 (function(){if(!(matchMedia('(pointer:coarse)').matches||'ontouchstart' in window))return;
 const kd=c=>dispatchEvent(new KeyboardEvent('keydown',{code:c})),ku=c=>dispatchEvent(new KeyboardEvent('keyup',{code:c})),cur={},sk=(c,on)=>{if(!!cur[c]!==on){cur[c]=on;on?kd(c):ku(c)}};
 $('help').style.display='none';
-const st=document.createElement('style');st.textContent='html,body{touch-action:none}.tb{position:fixed;border-radius:50%;border:2px solid #ffd54a;background:#0008;color:#ffd54a;font:bold 17px system-ui;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}.tb.on{background:#ffd54acc;color:#000}#js{position:fixed;left:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));width:130px;height:130px;border-radius:50%;background:#0006;border:2px solid #fff6;touch-action:none}#jk{position:absolute;left:45px;top:45px;width:40px;height:40px;border-radius:50%;background:#ffffffaa}#oc{left:50%!important;right:auto!important;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px))!important}#oc button{width:52px;height:52px}';document.head.appendChild(st);
-const mk=(t,code,px,py,sz,top)=>{const b=document.createElement('div');b.className='tb';b.textContent=t;b.style.cssText=`width:${sz}px;height:${sz}px;right:${px}px;`+(top?`top:calc(${py}px + env(safe-area-inset-top,0px))`:`bottom:calc(${py}px + env(safe-area-inset-bottom,0px))`);
+const st=document.createElement('style');st.textContent='*{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}html,body{overscroll-behavior:none}.tb{position:fixed;border-radius:50%;border:2px solid #ffd54a;background:#0008;color:#ffd54a;font:bold 17px system-ui;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}.tb.on{background:#ffd54acc;color:#000}#js{position:fixed;left:24px;bottom:calc(24px + env(safe-area-inset-bottom,0px));width:130px;height:130px;border-radius:50%;background:#0006;border:2px solid #fff6;touch-action:none}#jk{position:absolute;left:45px;top:45px;width:40px;height:40px;border-radius:50%;background:#ffffffaa}#oc{left:50%!important;right:auto!important;transform:translateX(-50%);bottom:calc(150px + env(safe-area-inset-bottom,0px))!important}#oc button{width:52px;height:52px}';document.head.appendChild(st);
+const mk=(t,code,px,py,sz,top,left)=>{const b=document.createElement('div');b.className='tb';b.textContent=t;b.style.cssText=`width:${sz}px;height:${sz}px;${left?'left':'right'}:${px}px;`+(top?`top:calc(${py}px + env(safe-area-inset-top,0px))`:`bottom:calc(${py}px + env(safe-area-inset-bottom,0px))`);
  b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);b.classList.add('on');kd(code)});
  const up=()=>{b.classList.remove('on');ku(code)};b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);document.body.appendChild(b)};
-mk('斬','KeyJ',20,40,76);mk('跳','Space',110,30,58);mk('盾','KeyK',22,128,54);mk('弓','KeyE',92,104,54);mk('C','KeyC',166,44,54);
-mk('Q','KeyQ',12,12,46,1);mk('V','KeyV',66,12,46,1);mk('R','KeyR',120,12,46,1);mk('Z','KeyZ',174,12,46,1);
+mk('斬','KeyJ',20,40,76);mk('跳','Space',110,30,58);mk('盾','KeyK',22,128,54);mk('WP','KeyE',92,104,54);mk('Act.','KeyC',180,44,54);mk('PUT','KeyV',244,44,54);
+mk('♪','KeyQ',12,12,46,1);mk('Z','KeyZ',14,84,46,1,1);
 const js=document.createElement('div');js.id='js';js.innerHTML='<div id="jk"></div>';document.body.appendChild(js);const jk=js.firstChild;let jid=null;
 const jm=e=>{const r=js.getBoundingClientRect(),dx=(e.clientX-r.left-65)/65,dy=(e.clientY-r.top-65)/65,m=Math.hypot(dx,dy),k=m>1?1/m:1,ux=dx*k,uy=dy*k;jk.style.transform=`translate(${ux*40}px,${uy*40}px)`;sk('KeyD',ux>.35);sk('KeyA',ux<-.35);sk('KeyS',uy>.35);sk('KeyW',uy<-.35);sk('ShiftLeft',Math.hypot(ux,uy)>.92)};
 js.addEventListener('pointerdown',e=>{e.preventDefault();jid=e.pointerId;js.setPointerCapture(jid);jm(e)});js.addEventListener('pointermove',e=>{if(e.pointerId==jid)jm(e)});
@@ -293,7 +294,8 @@ const jr=e=>{if(e.pointerId==jid){jid=null;jk.style.transform='';['KeyW','KeyA',
 let cm=null;const cv=R.domElement;cv.addEventListener('pointerdown',e=>{if(e.pointerType!='touch')return;e.preventDefault();cm={id:e.pointerId,x:e.clientX,y:e.clientY};cv.setPointerCapture(e.pointerId)});
 cv.addEventListener('pointermove',e=>{if(cm&&e.pointerId==cm.id){cy-=(e.clientX-cm.x)*.008;cp=Math.max(-.1,Math.min(1.1,cp+(e.clientY-cm.y)*.006));cm.x=e.clientX;cm.y=e.clientY}});
 const ce=e=>{if(cm&&e.pointerId==cm.id)cm=null};cv.addEventListener('pointerup',ce);cv.addEventListener('pointercancel',ce);
-$('ov').addEventListener('click',()=>kd('Enter'));
+$('ov').addEventListener('click',()=>{kd('Enter');try{const d=document.documentElement,f=d.requestFullscreen||d.webkitRequestFullscreen;if(f&&!document.fullscreenElement){const p=f.call(d,{navigationUI:'hide'});if(p&&p.catch)p.catch(()=>{})}if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{})}catch(e){}});
+let lt=0;document.addEventListener('touchend',e=>{const n=Date.now();if(n-lt<400&&!(e.target.closest&&e.target.closest('#oc')))e.preventDefault();lt=n},{passive:false});['gesturestart','gesturechange','dblclick'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
 })();
 tick();
 </script></body></html>
